@@ -12,13 +12,13 @@ func main() {
 	randomize(test)
 
 	start := time.Now()
-	test = mergesort(test)
+	mergesort(test)
 	end := time.Now()
 	fmt.Println("The amount of time merge sort takes is", end.Sub(start))
 	randomize(test)
 
 	start = time.Now()
-	test = mergesortConcurrent(test)
+	mergesortConcurrent(test)
 	end = time.Now()
 	fmt.Println("The amount of time concurrent merge sort takes is", end.Sub(start))
 	randomize(test)
@@ -33,6 +33,12 @@ func main() {
 	insertionsort(test)
 	end = time.Now()
 	fmt.Println("The amount of time insertionsort takes is", end.Sub(start))
+	randomize(test)
+
+	start = time.Now()
+	selectionsort(test)
+	end = time.Now()
+	fmt.Println("The amount of time selectionsort takes is", end.Sub(start))
 	randomize(test)
 
 	start = time.Now()
@@ -59,6 +65,118 @@ func main() {
 	fmt.Println("The amount of time concurrent random quicksort takes is", end.Sub(start))
 	randomize(test)
 
+	start = time.Now()
+	cocktailsort(test)
+	end = time.Now()
+	fmt.Println("The amount of time cocktail sort takes is", end.Sub(start))
+	randomize(test)
+
+	start = time.Now()
+	heapsort(test)
+	end = time.Now()
+	fmt.Println("The amount of time heapsort takes is", end.Sub(start))
+	randomize(test)
+
+	start = time.Now()
+	shellsort(test)
+	end = time.Now()
+	fmt.Println("The amount of time shell short takes is", end.Sub(start))
+	randomize(test)
+
+}
+
+func heapsort(arr []int) []int {
+	for i := len(arr)/2 - 1; i >= 0; i-- {
+		heapify(arr, len(arr), i)
+	}
+
+	for i := len(arr) - 1; i >= 0; i-- {
+		temp := arr[0]
+		arr[0] = arr[i]
+		arr[i] = temp
+		heapify(arr, i, 0)
+	}
+
+	return arr
+}
+
+func heapify(arr []int, n int, index int) {
+	largest := index
+	l := 2*index + 1
+	r := 2*index + 2
+
+	if l < n && arr[l] > arr[largest] {
+		largest = l
+	}
+
+	if r < n && arr[r] > arr[largest] {
+		largest = r
+	}
+
+	if largest != index {
+		temp := arr[index]
+		arr[index] = arr[largest]
+		arr[largest] = temp
+
+		heapify(arr, n, largest)
+	}
+
+}
+
+func cocktailsort(arr []int) []int {
+	swapped := true
+	start := 0
+	end := len(arr)
+	for swapped {
+		swapped = false
+
+		for i := start; i < end-1; i++ {
+			if arr[i] > arr[i+1] {
+				temp := arr[i]
+				arr[i] = arr[i+1]
+				arr[i+1] = temp
+				swapped = true
+			}
+		}
+		if swapped == false {
+			break
+		}
+		swapped = false
+		end = end - 1
+		for i := end - 1; i >= start; i-- {
+			if arr[i] > arr[i+1] {
+				temp := arr[i]
+				arr[i] = arr[i+1]
+				arr[i+1] = temp
+				swapped = true
+			}
+		}
+		start = start + 1
+	}
+	return arr
+}
+
+func shellsort(arr []int) []int {
+	for gap := len(arr) / 2; gap > 0; gap /= 2 {
+		for i := gap; i < len(arr); i++ {
+			temp := arr[i]
+			j := 0
+			for j = i; j >= gap && arr[j-gap] > temp; j -= gap {
+				arr[j] = arr[j-gap]
+			}
+			arr[j] = temp
+		}
+	}
+	return arr
+}
+
+func isItSorted(arr []int) bool {
+	for i := 0; i < len(arr)-1; i++ {
+		if arr[i] > arr[i+1] {
+			return false
+		}
+	}
+	return true
 }
 
 func randomize(arr []int) []int {
@@ -90,6 +208,21 @@ func insertionsort(arr []int) []int {
 			j--
 		}
 		arr[j+1] = value
+	}
+	return arr
+}
+
+func selectionsort(arr []int) []int {
+	for i := 0; i < len(arr)-1; i++ {
+		index := i
+		for j := i + 1; j < len(arr); j++ {
+			if arr[j] < arr[index] {
+				index = j
+			}
+		}
+		temp := arr[index]
+		arr[index] = arr[i]
+		arr[i] = temp
 	}
 	return arr
 }
